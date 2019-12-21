@@ -1,0 +1,14 @@
+{
+  "name": "welcomeconfig",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build:rasp": "electron-packager ./ welcomeconfig --overwrite --platform=linux --arch=armv7l --icon=./static/images/Logo.ico --out=./release --asar.u    npack='**/config/config.js' --app-version=0.0.1 --no-tmpdir=false --download.mirrorOptions.mirror=http://npm.taobao.org/mirrors/electron/ --unsafe-perm=true"
+  },
+  "devDependencies": {
+    "electron": "2.0.7",
+    "electron-packager": "12.2.0"
+  }
+}
