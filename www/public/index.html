@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>修改文案</title>
+  </head>
+  <body>
+    <div>
+      <textarea id="content" placeholder="新内容"></textarea>
+      <button onclick="onSubmit()">update</button>
+      <button onclick="onRestart()">restart</button>
+    </div>
+    <script>
+      async function onSubmit() {
+        let new_content = document.querySelector('#content').value;
+        let config = {
+          credentials: 'include', //为了在当前域名内自动发送 cookie ， 必须提供这个选项
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors', //请求的模式
+          cache: 'force-cache',
+          body: JSON.stringify({ content: new_content }),
+        };
+        await fetch('/api/update', config)
+          .then(res => res.json())
+          .then(res => {
+            alert(JSON.stringify(res));
+            window.location.reload();
+          })
+          .catch(e => alert(e));
+      }
+      async function onRestart() {
+        let config = {
+          credentials: 'include', //为了在当前域名内自动发送 cookie ， 必须提供这个选项
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors', //请求的模式
+          cache: 'no-cache',
+          body: '',
+        };
+        await fetch('/api/restart', config)
+          .then(res => res.json())
+          .then(res => {
+            alert(JSON.stringify(res));
+            window.location.reload();
+          })
+          .catch(e => alert(e));
+      }
+    </script>
+  </body>
+</html>

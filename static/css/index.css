@@ -1,4 +1,4 @@
-html{
+html {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -26,6 +26,7 @@ body::-webkit-scrollbar {
 }
 
 #content p {
-  font-size: 160px;
+  /* font-size: 160px; */
+  text-align: center;
   font-weight: bold;
 }

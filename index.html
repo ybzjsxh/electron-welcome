@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Hello World!</title>
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    <link rel="stylesheet" href="static/css/index.css">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+    <link rel="stylesheet" href="static/css/index.css" />
   </head>
   <body>
-    <div id='container' onclick="quit()">
-      <div id='content'>
+    <div id="container">
+      <div id="content">
         <p></p>
       </div>
     </div>
     <script>
-      window.onload = function() {
-        let content = getContent()
-        document.querySelector('#content p').innerHTML = window.content
-      }
-
-      function getContent() {
+      window.onload = async function() {
         let ipcRenderer = window.require('electron').ipcRenderer;
-        ipcRenderer.send('get-content')
-      }
+        ipcRenderer.on('get-content', (e, msg) => {
+          const { content, fontSize } = msg;
+          document.querySelector('#content p').style.fontSize = `${fontSize}px`;
+          console.log(document.querySelector('#content p').style.fontSize);
+          document.querySelector('#content p').innerHTML = content;
+        });
+      };
     </script>
   </body>
 </html>

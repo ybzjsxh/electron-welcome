@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const fs = require('fs');
-const { debug, content } = require('./config.json');
+const { debug, content, fontSize } = require('./config.json');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -31,19 +31,33 @@ function createWindow() {
     // 与此同时，你应该删除相应的元素。
     win = null;
   });
-  // win.webContents.on('did-finish-load', );
 }
-
-ipcMain.on('get-content', () => {
-  console.log('receive', content, win.webContents.content)
-  win.webContents.content = content
-  console.log(win.webContents.content)
-})
 
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', createWindow);
+app.on('ready', () => {
+  // 实例化BrowserWindow
+  createWindow();
+
+  // 页面加载完成时
+  win.webContents.on('did-finish-load', () => {
+    // 设置文字与字号
+    win.webContents.send('get-content', { content, fontSize });
+
+    // 获取pid
+    // 这是渲染进程pid不是想要的
+    // let pid = win.webContents.getOSProcessId();
+    let pid = process.pid;
+    fs.writeFile('./pid.txt', pid, err => {
+      if (!err) {
+        console.log('success');
+      } else {
+        console.log('fail');
+      }
+    });
+  });
+});
 
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
@@ -60,16 +74,4 @@ app.on('activate', () => {
   if (win === null) {
     createWindow();
   }
-});
-
-ipcMain.on('click', () => {
-  let pid = win.webContents.getOSProcessId();
-  console.log(pid);
-  fs.writeFile('./pid.txt', pid, err => {
-    if (!err) {
-      console.log('success');
-    } else {
-      console.log('fail');
-    }
-  });
 });
