@@ -49,16 +49,15 @@ app.on('ready', () => {
     // 这是渲染进程pid不是想要的
     // let pid = win.webContents.getOSProcessId();
     let pid = process.pid;
-    fs.writeFile('./pid.txt', pid, err => {
-      if (!err) {
-        console.log('success');
+    fs.writeFile('./www/pid.txt', pid, err=>{
+      if(err){
+        console.log(err)
       } else {
-        console.log('fail');
+        console.log('write pid ok')
       }
     });
   });
 });
-
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
   // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，

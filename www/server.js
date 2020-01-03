@@ -5,8 +5,7 @@ const bodyParser = require('body-parser');
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
-const { spawn, exec, execSync, spawnSync } = require('child_process');
-// const router = express.Router()
+const { spawn, spawnSync } = require('child_process');
 
 const port = process.env.PORT || 3001;
 
@@ -18,34 +17,40 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 router.post('/update', (req, res, next) => {
   const { content, fontSize = 160 } = req.body;
-  // TODO 路径问题
-  let config = fs.readFileSync('../resouces/config.json', 'utf8');
+  let config = fs.readFileSync(
+    path.join(__dirname, '../resources/app.asar.unpacked/config.json'),
+    'utf8',
+  );
   let new_config = { ...JSON.parse(config), content, fontSize };
-  // TODO 路径问题
-  fs.writeFile('../config.json', JSON.stringify(new_config), err => {
-    if (!err) {
-      console.log('update success');
-      res.json({ code: 0, msg: 'ok', content });
-    } else {
-      res.json({ code: -1, msg: err.msg });
-    }
-  });
+  fs.writeFile(
+    path.join(__dirname, '../resources/app.asar.unpacked/config.json'),
+    JSON.stringify(new_config),
+    err => {
+      if (!err) {
+        console.log('update success');
+        res.json({ code: 0, msg: 'ok', content });
+      } else {
+        res.json({ code: -1, msg: err.msg });
+      }
+    },
+  );
 });
 
 router.post('/restart', (req, res) => {
-  let pid = fs.readFileSync('../pid.txt');
-  exec(`sudo kill -9 ${pid}`, err => {
-    if (!err) {
-      console.log('ss');
-    } else {
-      console.log(err);
-    }
-  });
-  setTimeout(() => {
-    // TODO: 重启问题
-    spawn('yarn', ['start'], { cwd: path.join(__dirname, '../') });
+  try {
+    fs.readFile(path.join(__dirname, './pid.txt'), 'utf8', (err, pid) => {
+      console.log('current pid: ', pid);
+      spawnSync('taskkill', ['/pid', `${pid}`, '-t', '-f']);
+    });
+    console.log('restarting app');
+    spawn(path.join(__dirname, '../welcomeconfig.exe'), {
+      cwd: path.join(__dirname, '../'),
+    });
     res.json({ code: 0, msg: 'ok' });
-  }, 2000);
+  } catch (err) {
+    console.log(err);
+    res.json({ code: -1, msg: 'error' });
+  }
 });
 
 app.use('/api', router);

@@ -5,8 +5,10 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "build:mac": "electron-packager . welcomeconfig --overwrite --platform=darwin --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack {config.json,**/*.png} --app-version=0.0.1 ",
-    "build:rasp": "electron-packager . welcomeconfig --overwrite --platform=linux --arch=armv7l --icon=./static/images/Logo.ico --out=release --asar.unpack config.json --app-version=0.0.1 --ignore=www --no-tmpdir=false --download.mirrorOptions.mirror=http://npm.taobao.org/mirrors/electron/ --unsafe-perm=true"
+    "build:win32_x64": "electron-packager . welcomeconfig --overwrite --platform=win32 --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack={config.json,**/*.png} --app-version=0.0.1 && cp -r www release/welcomeconfig-win32-x64",
+    "build:mac": "electron-packager . welcomeconfig --overwrite --platform=darwin --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack={config.json,**/*.png} --app-version=0.0.1 ",
+    "build:rasp": "electron-packager . welcomeconfig --overwrite --platform=linux --arch=armv7l --icon=./static/images/Logo.ico --out=release --asar.unpack={config.json,**/*.png} --app-version=0.0.1 --ignore=www --no-tmpdir=false --download.mirrorOptions.mirror=http://npm.taobao.org/mirrors/electron/ --unsafe-perm=true",
+    "move": "cp -r www release/welcomeconfig-win32-x64"
   },
   "devDependencies": {
     "electron": "2.0.7",
