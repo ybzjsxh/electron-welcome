@@ -2,3 +2,4 @@ node_modules
 yarn-err*
 release
 pid.txt
+upload_tmp

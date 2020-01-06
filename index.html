@@ -19,11 +19,12 @@
     <script>
       window.onload = async function() {
         let ipcRenderer = window.require('electron').ipcRenderer;
-        ipcRenderer.on('get-content', (e, msg) => {
-          const { content, fontSize } = msg;
-          document.querySelector('#content p').style.fontSize = `${fontSize}px`;
-          console.log(document.querySelector('#content p').style.fontSize);
-          document.querySelector('#content p').innerHTML = content;
+        ipcRenderer.on('get-content', (e, config) => {
+          const { content, fontSize, fontColor} = config;
+          let dom = document.querySelector('#content p');
+          dom.style.fontSize = `${fontSize}px`;
+          dom.style.color = fontColor;
+          dom.innerHTML = content;
         });
       };
     </script>

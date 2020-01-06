@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const fs = require('fs');
-const { debug, content, fontSize } = require('./config.json');
+const { debug, content, fontSize, fontColor } = require('./config.json');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -43,7 +43,7 @@ app.on('ready', () => {
   // 页面加载完成时
   win.webContents.on('did-finish-load', () => {
     // 设置文字与字号
-    win.webContents.send('get-content', { content, fontSize });
+    win.webContents.send('get-content', { content, fontSize, fontColor });
 
     // 获取pid
     // 这是渲染进程pid不是想要的

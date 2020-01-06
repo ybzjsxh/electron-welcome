@@ -4,65 +4,126 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="shortcut icon" href="assets/Logo.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/Logo.ico" type="image/x-icon" />
     <link rel="stylesheet" href="assets/css/bootstrap.4.3.1.min.css" />
     <title>修改欢迎文案</title>
   </head>
-  <body
-    style="display: flex; justify-content: center; width: 100%; margin: 0 20px;"
-  >
+  <body style="display: flex; justify-content: center; width: 100%;">
     <div>
+      <div style="text-align: center;margin: 20px 0 0; font-size: 24px;">
+        更新欢迎词
+      </div>
       <textarea
         id="content"
         class="form-control"
-        style="margin: 20px 0;width: 400px;"
+        style="margin: 20px 0;width: 300px;"
         rows="3"
         placeholder="请填入新内容，以'<br>'换行"
       ></textarea>
       <div class="input-group mb-3">
-        <select class="custom-select" id="fontsize">
-          <option value="160">160</option>
+        <select class="custom-select" id="fontSize">
+          <option value="160">160 (默认)</option>
           <option value="140">140</option>
           <option value="120">120</option>
         </select>
         <div class="input-group-append">
-          <label class="input-group-text" for="fontsize">字号大小</label>
+          <label class="input-group-text" for="fontSize">字号大小</label>
         </div>
       </div>
-      <div class="input-group" style="margin: 20px 0; ">
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" id="backImg" aria-describedby="backImg">
-          <label class="custom-file-label" for="backImg"">选择文件</label>
-        </div>
+      <div class="input-group mb-3">
+        <select class="custom-select" id="color">
+          <option value="#000">黑色 (默认)</option>
+          <option value="#fff">白色</option>
+          <option value="#eee">灰色</option>
+        </select>
         <div class="input-group-append">
-          <button class="btn btn-outline-info" type="button" id="uploadBtn">上传</button>
+          <label class="input-group-text" for="color">字体颜色</label>
         </div>
       </div>
-      <div class="btnGroup" style="display: flex; justify-content: space-between;">
-        <button class="btn btn-outline-primary" onclick="onSubmit()">
-          更新欢迎文案
-        </button>
-        <button class="btn btn-outline-danger" onclick="onRestart()">
-          重启app
+      <button class="btn btn-outline-primary btn-block" onclick="update()">
+        更新
+      </button>
+    </div>
+    <div style="border: 1px solid #eee;margin: 30px;"></div>
+    <div id="sec-section">
+      <div style="text-align: center;margin: 20px 0 0; font-size: 24px;">
+        更换背景图
+      </div>
+      <div
+        id="upload"
+        class="input-group"
+        style="margin: 20px 0; width:300px; "
+      >
+        <div class="custom-file" style="width:100%;">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="backImg"
+            name="file"
+            aria-describedby="backImg"
+          />
+          <label class="custom-file-label" for="backImg" data-browse="浏览"
+            >...</label
+          >
+        </div>
+        <small class="form-text text-muted" style="float: left;"
+          >图片尺寸最好是1920x1080的</small
+        >
+      </div>
+      <div>
+        <button
+          class="btn btn-outline-success btn-block"
+          id="uploadBtn"
+          onclick="upload()"
+        >
+          上传并更换
         </button>
       </div>
     </div>
+    <div style="position: absolute;top:350px;width:200px">
+      <button class="btn btn-outline-danger btn-block" onclick="restart()">
+        重启app
+      </button>
+      <small class="form-text text-muted">所有操作完成均须重启app后生效</small>
+    </div>
     <script>
-      async function onSubmit() {
+      window.onload = function() {
+        // 监测上传文件改变
+        $(':file').change(function() {
+          // console.log(this, this.files);
+          var file = this.files[0];
+          name = file.name;
+          size = file.size;
+          type = file.type;
+          $('.custom-file-label').html(name);
+          $('#sec-section')
+            .find('span')
+            .empty();
+          $('#upload').after('<span>' + Math.ceil(size / 1024) + 'k</span>');
+        });
+      };
+      let config = {
+        credentials: 'include', //为了在当前域名内自动发送 cookie ， 必须提供这个选项
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors', //请求的模式
+        cache: 'no-cache',
+        body: '',
+      };
+      async function update() {
         let new_content = document.querySelector('#content').value;
-        let fontSize = $('#fontsize').find('option:selected').val();
-        let config = {
-          credentials: 'include', //为了在当前域名内自动发送 cookie ， 必须提供这个选项
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          mode: 'cors', //请求的模式
-          cache: 'force-cache',
-          body: JSON.stringify({ content: new_content, fontSize }),
+        let fontSize = $('#fontSize')
+          .find('option:selected')
+          .val();
+        let color = $('#color').find('option:selected').val()
+        let new_config = {
+          ...config,
+          body: JSON.stringify({ content: new_content, fontSize, color }),
         };
-        await fetch('/api/update', config)
+        await fetch('/api/update', new_config)
           .then(res => res.json())
           .then(res => {
             alert(JSON.stringify(res));
@@ -70,22 +131,35 @@
           })
           .catch(e => alert(e));
       }
-      async function onRestart() {
-        let config = {
-          credentials: 'include', //为了在当前域名内自动发送 cookie ， 必须提供这个选项
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          mode: 'cors', //请求的模式
-          cache: 'no-cache',
-          body: '',
-        };
+      async function restart() {
         await fetch('/api/restart', config)
           .then(res => res.json())
           .then(res => {
             alert(JSON.stringify(res));
+            window.location.reload();
+          })
+          .catch(e => alert(e));
+      }
+      async function upload() {
+        let backImg = $('#backImg')[0].files[0];
+        let formData = new FormData();
+        formData.append('file', backImg);
+        let new_config = {
+          ...config,
+          headers: {
+            Accept: 'application/json',
+            // 不要加content-type!!!!!!
+            // 'Content-Type': 'multipart/form-data; boundary=------',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData,
+        };
+
+        await fetch('/api/upload', new_config)
+          .then(res => res.json())
+          .then(res => {
+            alert(JSON.stringify(res));
+
             window.location.reload();
           })
           .catch(e => alert(e));
