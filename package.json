@@ -1,13 +1,13 @@
 {
   "name": "welcomeconfig",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "build:win32_x64": "electron-packager . welcomeconfig --overwrite --platform=win32 --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack={config.json,**/*.png} --app-version=1.1.0 && cp -r www release/welcomeconfig-win32-x64",
-    "build:mac": "electron-packager . welcomeconfig --overwrite --platform=darwin --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack={config.json,**/*.png} --app-version=1.1.0  && cp -r www release/welcomeconfig-darwin-x64",
-    "build:rasp": "electron-packager . welcomeconfig --overwrite --platform=linux --arch=armv7l --icon=./static/images/Logo.ico --out=release --asar.unpack={config.json,**/*.png} --app-version=1.1.0 --ignore=www --no-tmpdir=false --download.mirrorOptions.mirror=http://npm.taobao.org/mirrors/electron/ --unsafe-perm=true  && cp -r www release/welcomeconfig-linux-armv7l",
+    "build:win32_x64": "electron-packager . welcomeconfig --overwrite --platform=win32 --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack={config.json,**/*.png} --app-version=1.1.1 && cp -r www release/welcomeconfig-win32-x64",
+    "build:mac": "electron-packager . welcomeconfig --overwrite --platform=darwin --arch=x64 --icon=./static/images/Logo.ico --out=release --ignore=www --asar.unpack={config.json,**/*.png} --app-version=1.1.1  && cp -r www release/welcomeconfig-darwin-x64",
+    "build:rasp": "electron-packager . welcomeconfig --overwrite --platform=linux --arch=armv7l --icon=./static/images/Logo.ico --out=release --asar.unpack={config.json,**/*.png} --app-version=1.1.1 --ignore=www --no-tmpdir=false --download.mirrorOptions.mirror=http://npm.taobao.org/mirrors/electron/ --unsafe-perm=true  && cp -r www release/welcomeconfig-linux-armv7l",
     "move:win32_x64": "cp -r www release/welcomeconfig-win32-x64",
     "move:rasp": "cp -r www release/welcomeconfig-linux-armv7l"
   },
