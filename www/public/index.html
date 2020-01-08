@@ -118,7 +118,9 @@
         let fontSize = $('#fontSize')
           .find('option:selected')
           .val();
-        let color = $('#color').find('option:selected').val()
+        let color = $('#color')
+          .find('option:selected')
+          .val();
         let new_config = {
           ...config,
           body: JSON.stringify({ content: new_content, fontSize, color }),
@@ -138,7 +140,10 @@
             alert(JSON.stringify(res));
             window.location.reload();
           })
-          .catch(e => alert(e));
+          .catch(e => {
+            alert('请等待设备重启完成...');
+            window.location.reload();
+          });
       }
       async function upload() {
         let backImg = $('#backImg')[0].files[0];

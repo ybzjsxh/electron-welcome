@@ -75,44 +75,20 @@ router.post(
 );
 
 router.post('/restart', (req, res) => {
-  try {
-    fs.readFile(path.join(__dirname, './pid.txt'), 'utf8', (error, pid) => {
-      if (error) {
-        console.log(error);
-        err.error(`读取pid失败：${error}`);
-      } else {
-        console.log('current pid: ', pid);
-        if (platform === 'win32') {
-          net.info(`执行命令：taskkill /pid ${pid} -t -f`);
-          spawnSync('taskkill', ['/pid', `${pid}`, '-t', '-f']);
-
-          console.log('restarting app');
-          net.info(`restarting app`);
-          net.info(`启动程序---windows`);
-          spawn(path.join(__dirname, '../welcomeconfig.exe'), {
-            cwd: path.join(__dirname, '../'),
-          });
-          net.info(`重启成功！`);
-          res.json({ code: 0, msg: 'ok' });
-        } else {
-          net.info(`执行命令：sudo kill -9 ${pid}`);
-          spawnSync('sudo', ['kill', '-9', `${pid}`]);
-
-          console.log('restarting app');
-          net.info(`restarting app`);
-          net.info(`启动程序---linux`);
-          spawn(path.join(__dirname, '../welcomeconfig'), {
-            cwd: path.join(__dirname, '../'),
-          });
-          net.info(`重启成功！`);
-          res.json({ code: 0, msg: 'ok' });
-        }
-      }
-    });
-  } catch (error) {
-    console.log(error);
-    err.error(`重启失败：${error}`);
-    res.json({ code: -1, msg: 'error' });
+  if (platform === 'linux') {
+    try {
+      net.info(`执行命令：sudo reboot`);
+      spawnSync('sudo', ['reboot']);
+    } catch (error) {
+      err.error(`${error}`);
+    }
+  } else {
+    try {
+      net.info(`执行命令：shutdown -s -t 0`);
+      spawnSync('shutdown', ['-s', '-t', '0']);
+    } catch (error) {
+      err.error(`${error}`);
+    }
   }
 });
 

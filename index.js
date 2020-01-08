@@ -1,5 +1,5 @@
-const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
-const fs = require('fs');
+const { app, BrowserWindow } = require('electron');
+// const fs = require('fs');
 const { debug, content, fontSize, fontColor } = require('./config.json');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
@@ -45,17 +45,17 @@ app.on('ready', () => {
     // 设置文字与字号
     win.webContents.send('get-content', { content, fontSize, fontColor });
 
-    // 获取pid
-    // 这是渲染进程pid不是想要的
-    // let pid = win.webContents.getOSProcessId();
-    let pid = process.pid;
-    fs.writeFile('./www/pid.txt', pid, err=>{
-      if(err){
-        console.log(err)
-      } else {
-        console.log('write pid ok')
-      }
-    });
+    // // 获取pid
+    // // 这是渲染进程pid不是想要的
+    // // let pid = win.webContents.getOSProcessId();
+    // let pid = process.pid;
+    // fs.writeFile('./www/pid.txt', pid, err=>{
+    //   if(err){
+    //     console.log(err)
+    //   } else {
+    //     console.log('write pid ok')
+    //   }
+    // });
   });
 });
 // 当全部窗口关闭时退出。
